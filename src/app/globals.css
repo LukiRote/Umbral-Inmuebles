@@ -1,0 +1,283 @@
+@import "tailwindcss";
+
+/* Quiet-luxury palette: bone paper, warm ink, sand, clay and a pale fog block. */
+@theme {
+  --color-paper: #f4efe8;
+  --color-paper-2: #ece5da;
+  --color-sand: #e2d7c7;
+  --color-ink: #1a1714;
+  --color-ink-2: #2a2520;
+  --color-muted: #6b635a;
+  --color-line: #d6ccbe;
+  --color-clay: #9c6447;
+  --color-fog: #cfd6da;
+  --color-olive: #4f4c3c;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-italic: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+:root {
+  --gutter: clamp(1rem, 4vw, 4rem);
+  --header: 4.5rem;
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Split headings stay hidden until GSAP has split them (motion users only). */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-split] {
+    visibility: hidden;
+  }
+}
+
+/* Line masks get room for accents and descenders (É, g, q) without changing the layout. */
+[data-split] > * {
+  padding-block: 0.26em 0.18em;
+  margin-block: -0.26em -0.18em;
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    padding-inline: var(--gutter);
+    margin-inline: auto;
+    max-width: 1680px;
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+  }
+  /* Large figures (prices, counters, indexes): Cormorant only has old-style digits, so they use the sans. */
+  .num {
+    font-family: var(--font-sans);
+    font-weight: 200;
+    letter-spacing: -0.045em;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .italic-accent {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-weight: 300;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .kicker {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--color-muted);
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .lede {
+    font-size: clamp(1.05rem, 0.4vw + 0.95rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-ink-2);
+  }
+
+  /* Buttons: one style, ink fill that wipes on hover. */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0 1.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-ink);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      color 0.5s var(--ease-out-expo),
+      transform 0.2s ease;
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-ink);
+    transform: translateY(101%);
+    border-radius: inherit;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .btn:hover {
+    color: var(--color-paper);
+  }
+  .btn:hover::before {
+    transform: translateY(0);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-solid {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-solid::before {
+    background: var(--color-clay);
+  }
+  .btn-light {
+    border-color: var(--color-paper);
+    color: var(--color-paper);
+  }
+  .btn-light::before {
+    background: var(--color-paper);
+  }
+  .btn-light:hover {
+    color: var(--color-ink);
+  }
+
+  /* Link with an underline that draws on hover. */
+  .ulink {
+    background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
+    transition: background-size 0.6s var(--ease-out-expo);
+  }
+  .ulink:hover,
+  .ulink:focus-visible {
+    background-size: 100% 1px;
+    background-position: 0 100%;
+  }
+
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.9rem 0;
+    font-size: 1.05rem;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .field:focus {
+    border-color: var(--color-ink);
+  }
+  .field-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Card photo zoom on hover. */
+  .zoom img {
+    transition: transform 1.2s var(--ease-out-expo);
+  }
+  .zoom:hover img {
+    transform: scale(1.04);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+}
+
+/* Leaflet: quiet controls and pins that match the site. */
+.leaflet-container {
+  background: var(--color-paper-2);
+  font-family: var(--font-sans);
+}
+.umbral-tiles {
+  filter: grayscale(1) sepia(0.18) contrast(0.92) brightness(1.04);
+}
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgb(244 239 232 / 0.85) !important;
+}
+.leaflet-bar a {
+  color: var(--color-ink) !important;
+  background: var(--color-paper) !important;
+}
+.umbral-pin {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 6px 18px rgb(26 23 20 / 0.25);
+  transition:
+    background 0.3s,
+    transform 0.3s;
+  width: max-content;
+}
+.umbral-pin:hover,
+.umbral-pin.is-active {
+  background: var(--color-clay);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+}
+.leaflet-popup-content {
+  margin: 0;
+  width: 240px !important;
+}
+
+/* Photo Sphere Viewer navbar in site colours. */
+.psv-navbar {
+  background: rgb(26 23 20 / 0.7) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
